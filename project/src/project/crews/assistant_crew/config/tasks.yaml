@@ -1,0 +1,6 @@
+task_handler:
+  description: >
+    Answer the question of the user.{question}
+  expected_output: >
+    A well-structured answer to the question.
+  agent: personal_assistant
