@@ -15,6 +15,7 @@ dependencies = [
 [project.scripts]
 kickoff = "project.main:kickoff"
 plot = "project.main:plot"
+run_crew = "project.main2:main"
 
 [build-system]
 requires = ["hatchling"]

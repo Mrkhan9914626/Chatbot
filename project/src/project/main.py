@@ -10,6 +10,10 @@ def initialize_session_state():
         st.session_state.messages = []
     if 'assistant_crew' not in st.session_state:
         st.session_state.assistant_crew = AssistantCrew()
+    if 'questions_history' not in st.session_state:
+        st.session_state.questions_history = []
+    if 'selected_question' not in st.session_state:
+        st.session_state.selected_question = None
 
 def extract_raw_response(response):
     try:
@@ -54,27 +58,43 @@ def main():
         layout="wide"
     )
     
+    # Initialize session state first
+    initialize_session_state()
     
+    # Sidebar
     with st.sidebar:
         st.title("Options")
         if st.button("🗑️ Clear Chat History", type="primary"):
             st.session_state.messages = []
+            st.session_state.questions_history = []
             st.rerun()
-    
-    initialize_session_state()
-    
+        
+        st.title("Questions History")
+        for idx, question in enumerate(st.session_state.questions_history):
+            if st.button(f"📝 {question[:30]}...", key=f"q_{idx}"):
+                st.session_state.selected_question = idx
+                st.rerun()
+
     st.title("🤖 AI Personal Assistant")
     st.markdown("""
     Welcome! I'm your AI assistant. I can help you with various tasks and remember our conversations.
     """)
     
+    # Display messages up to selected question if one is selected
+    display_messages = st.session_state.messages
+    if st.session_state.selected_question is not None:
+        selected_idx = st.session_state.selected_question
+        # Find the position of the selected question in messages (multiply by 2 because each Q&A is 2 messages)
+        display_messages = st.session_state.messages[:(selected_idx + 1) * 2]
+        st.session_state.selected_question = None  # Reset selection after displaying
     
-    for message in st.session_state.messages:
+    for message in display_messages:
         with st.chat_message(message["role"]):
             st.write(message["content"])
     
-    
     if prompt := st.chat_input("You:"):
+        # Add to questions history
+        st.session_state.questions_history.append(prompt)
         
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):

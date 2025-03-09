@@ -58,7 +58,7 @@ class AssistantCrew:
             config=self.agents_config["personal_assistant"],
             llm=llm1,
             tools=[search_tools_1, search_tools_2],
-            verbose=True  
+            # verbose=True  
         )
 
 
@@ -77,7 +77,7 @@ class AssistantCrew:
             agents=self.agents, 
             tasks=self.tasks,  
             process=Process.sequential,
-            verbose=True,
+            # verbose=True,
             memory=True,
             long_term_memory=LongTermMemory(
                 storage=LTMSQLiteStorage(
